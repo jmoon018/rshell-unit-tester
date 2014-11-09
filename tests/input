@@ -1,0 +1,6 @@
+pwd
+ls
+echo hello 
+echo hi
+ls -a
+cd ..
