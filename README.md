@@ -56,7 +56,7 @@ may give you a "fail" for that 'test.'</p>
     <li>The formatting and feedback can use some improvement</li>
 </ol>
 
-<h1><a name="howItWorks">How It Works</a></h1>
+<h1><a name="howItWorksTag">How It Works</a></h1>
 
 <ul>
 <li>1. Create directory for the user/bash logs. Will be used more extensively later (to test environment with ls/pwd)</li>
