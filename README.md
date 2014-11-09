@@ -14,8 +14,7 @@
 
 <h1><a name="introTag">Introduction</a></h1>
 
-This project will allow one to quickly test the functionality of his or her rshell program and receive basic feedback (eg: which commands failed/passed). This program reads an input file (in tests/input), executes the bash shell and the student's shell, stores and compares the output. If the output differs, then it is recorded as a fail and printed out
-when the entire program finishes
+This project will allow one to quickly test the functionality of his or her rshell program and receive basic feedback (eg: which commands failed/passed). This program reads an input file (in the folder: <i>tests/input</i>), executes the bash shell and the student's shell, stores and compares the output. If the output differs, then it is recorded as a fail and printed out when the entire program finishes
 
 <h1><a name="featuresTag">Features</a></h1>
 
@@ -40,17 +39,17 @@ when the entire program finishes
 5) ./autograder**</b>
 </p>
 
-<h5>** Ensure that you are inside the bin folder, then type ./autograder. It may not work if you run it from root ../bin or the root folder</h5>
+<h5>** Ensure that you are inside the bin folder, then type ./autograder. It may not work if you run it from ../bin or the root folder</h5>
 
 <h1><a name="howToUseTag">How To Use</a></h1>
 
 <p>Navigate to your <i>bin</i> folder and then type ./autograder when you are ready to run the program.<p>
-<p>To change the test cases, navigate to the <i>tests</i> folder, open the <i>input</i> file and add a command you want to test. Make sure that each command has its own separate line. Don't leave an extra, empty line or else it the program
+<p>To change the test cases, navigate to the <i>tests</i> folder, open the <i>input</i> file and add a command you want to test. Make sure that each command has its own separate line. Don't leave an extra, empty line or else the program
 may give you a "fail" for that 'test.'</p>
 
 <h1><a name="bugsTag">Known Bugs/Limitations</a></h1>
 <ol>
-    <li>Testing is lacking, so many bugs arise</li>
+    <li>Testing is minimal so far, and thus this program might contain a lot of bugs</li>
     <li>Has no protection against cheating, yet</li>
     <li>Does not check if the environment is correct. eg: if you change directories, the program won't actually
         do a "pwd" check to ensure it worked. This should be an easy fix</li>
