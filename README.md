@@ -9,7 +9,7 @@
     <li><a href="#howToGetTag">How To Install</a></li>
     <li><a href="#howToUseTag">How To Use</a></li>
     <li><a href="#bugsTag">Bugs/Limitations</a></li>
-    <li><a href="#howItWorksTag"</a>How It Works</li>
+    <li><a href="#howItWorksTag">How It Works</a></li>
 </ol>
 
 <h1><a name="introTag">Introduction</a></h1>
