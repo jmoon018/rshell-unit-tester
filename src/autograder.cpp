@@ -38,7 +38,6 @@ using namespace std;
 // The path to your rshell program. This is important!
 const string PATH_TO_RSHELL = "./rshell"; 
 
-
 // Two directories will be made. They will each be the testing environments
 //		for the user/bash shell versions. The purpose of this is to test
 //		that cd, pwd, ls, etc all work properly
