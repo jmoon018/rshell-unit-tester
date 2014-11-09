@@ -59,17 +59,19 @@ may give you a "fail" for that 'test.'</p>
 
 <h1><a name="howItWorks">How It Works</a></h1>
 
-<p>
-  1. Create directory for the user/bash logs. Will be used more extensively later (to test environment with ls/pwd)
-  2. Loop through each line of the INPUT file
-  3. Create an rshell instance, and using "script -c along" with redirection, input the command. Record output to log
-      3b. Sleep for .2 seconds, or else the the while loop will iterate too quickly and the program wont work
- 4. Same as 3, but for the bash instance
- 5. call/store compareOutput() to see if the two log files are the same
-    5b. Before doing so, the log files are quickly fixed; any random characters, and the timestamp, are removed.
- 6. Cleanup directories/open files 
- 7. Print the results
+<ul>
+<li>1. Create directory for the user/bash logs. Will be used more extensively later (to test environment with ls/pwd)</li>
+<li>  2. Loop through each line of the INPUT file</li>
+<li>  3. Create an rshell instance, and using "script -c along" with redirection, input the command. Record output to log</li>
+    <li> 3b. Sleep for .2 seconds, or else the the while loop will iterate too quickly and the program wont work</li>
+<li> 4. Same as 3, but for the bash instance</li>
+<li> 5. call/store compareOutput() to see if the two log files are the same</li>
+    <li> 5b. Before doing so, the log files are quickly fixed; any random characters, and the timestamp, are removed.</li>
+<li> 6. Cleanup directories/open files </li>
+<li> 7. Print the results</li>
+</ul>
 
+<p>
   The source file has many comments to help everyone follow along. If there are any questions, let me know.
 </p>
 
