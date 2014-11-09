@@ -57,7 +57,7 @@ may give you a "fail" for that 'test.'</p>
     <li>The formatting and feedback can use some improvement</li>
 </ol>
 
-<h1><a name="toDoTag">To Do List>/a></h1>
+<h1><a name="toDoTag">To Do List</a></h1>
 <ul>
     <li>Automate testing for all students---the program should download all the student's files and test them</li>
     <li>Detect cheating</li>
