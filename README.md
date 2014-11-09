@@ -9,6 +9,7 @@
     <li><a href="#howToGetTag">How To Install</a></li>
     <li><a href="#howToUseTag">How To Use</a></li>
     <li><a href="#bugsTag">Bugs/Limitations</a></li>
+    <li><a href="#toDoTag">To-Do List</a></li>
     <li><a href="#howItWorksTag">How It Works</a></li>
 </ol>
 
@@ -55,6 +56,16 @@ may give you a "fail" for that 'test.'</p>
         do a "pwd" check to ensure it worked. This should be an easy fix</li>
     <li>The formatting and feedback can use some improvement</li>
 </ol>
+
+<h1><a name="toDoTag">To Do List>/a></h1>
+<ul>
+    <li>Automate testing for all students---the program should download all the student's files and test them</li>
+    <li>Detect cheating</li>
+    <li>Detect minor differences in output (different but still valid output)</li>
+    <li>Formatting and feedback can be nicer</li>
+    <li>Add a file of the commands that failed</li>
+    <li>Ensure the environment is correct after each command</li>
+</ul>
 
 <h1><a name="howItWorksTag">How It Works</a></h1>
 
