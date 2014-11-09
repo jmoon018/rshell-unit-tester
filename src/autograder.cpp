@@ -36,7 +36,7 @@
 using namespace std;
 
 // The path to your rshell program. This is important!
-const string PATH_TO_RSHELL = "bin/rshell"; 
+const string PATH_TO_RSHELL = "./rshell"; 
 
 
 // Two directories will be made. They will each be the testing environments
@@ -46,7 +46,7 @@ const string PATH_TO_RSHELL = "bin/rshell";
 //	The directories may be automatically deleted afterwards, if AUTO_DELETE=true
 const string USER_FOLDER	= "user_folder_tmp";
 const string BASH_FOLDER	= "bash_folder_tmp";
-const bool AUTO_DELETE	= false; // Delete the files after you're done?
+const bool AUTO_DELETE	= true; // Delete the files after you're done?
 
 // The name of the log files
 const string USER_OUT_FILE = "user_out.log";
@@ -245,7 +245,7 @@ int main()
 
 	// Output test cases
 	cout << "Printing test results." << endl;
-	int total=0, passed=0;
+	unsigned total=0, passed=0;
 	for(total = 0; total < tests.size(); total++)
 	{
 		cout << "Test case " << total << ":" << endl;
