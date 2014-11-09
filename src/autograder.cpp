@@ -212,7 +212,7 @@ int main()
 		// Add a delay. Change it for slower machines, although this value
 		//	should be sufficient.
 		// If this while loop runs too quickly, the program won't run properly
-		cmd("sleep .25");
+		cmd("sleep .1");
 
 		// Test the actual bash
 		cout << "\nTesting bash shell" << endl;
