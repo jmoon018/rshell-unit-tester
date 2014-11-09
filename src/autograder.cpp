@@ -36,7 +36,7 @@
 using namespace std;
 
 // The path to your rshell program. This is important!
-const string PATH_TO_RSHELL = "/bin/rshell"; 
+const string PATH_TO_RSHELL = "bin/rshell"; 
 
 
 // Two directories will be made. They will each be the testing environments
@@ -57,7 +57,7 @@ const string userpath = (USER_FOLDER + "/" + USER_OUT_FILE);
 
 // Input file
 // Has list of commands-to-be-tested delimited by a line
-const string INPUT_FILE = "input";
+const string INPUT_FILE = "../tests/input";
 
 
 // Just like system(xxx.c_str()), but faster to type. 
