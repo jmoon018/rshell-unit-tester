@@ -45,7 +45,7 @@ const string PATH_TO_RSHELL = "./rshell";
 //	The directories may be automatically deleted afterwards, if AUTO_DELETE=true
 const string USER_FOLDER	= "user_folder_tmp";
 const string BASH_FOLDER	= "bash_folder_tmp";
-const bool AUTO_DELETE	= true; // Delete the files after you're done?
+const bool AUTO_DELETE	= false; // Delete the files after you're done?
 
 // The name of the log files
 const string USER_OUT_FILE = "user_out.log";
@@ -99,21 +99,29 @@ void fixString(string &line)
 void fixUserOutput(const string& cmd) {
 	ifstream user(userpath.c_str()); 
 	vector<string> lines; // contains the list of each line in the output file
-	string firstPart; // this will contain the string that is outputted before
+	string firstPart = ""; // this will contain the string that is outputted before
 					  // each command.. EG: if it's jmoon018$ echo hi
 					  // then firstPart = jmoon018$ 
 	
 	string curLine;
 	while (getline(user, curLine)) {
 		// Find the command
-		size_t location = curLine.find(cmd);
-		if(location != string::npos) // Ok, found it
-		{
-			firstPart = curLine.substr(location);
-			lines.push_back(cmd); // push back only the commnand
+		//cout << "fixingoutput... " << curLine << endl;
+		size_t location = 1+curLine.find(" ");
+		if(firstPart == "") {
+			firstPart = curLine.substr(0, location);
+			string theRet = curLine.substr(location, 10000);
+			cout << "RET: " << curLine << endl;
+			lines.push_back(theRet);
 		}
 		else {
+			if(curLine.compare(firstPart) == 0)
+				curLine = "";
+			cout << "RET2: " << curLine << "." << endl;
+			cout << "RET3: " << firstPart << "." << endl;
 			lines.push_back(curLine);
+			//lines.push_back("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+			//cout << "Added " << cmd << " to lines.." << lines.at(lines.size()-1) << "." << endl;
 		}
 	}
 
@@ -122,13 +130,16 @@ void fixUserOutput(const string& cmd) {
 	if(firstPart.compare(lines.at(penIndex)) != 0) {
 		cout << "WARNING: fixUserOutput - did not detect same text at the 2nd to last line." << endl;
 	}
-	lines.at(penIndex) = ""; // set it to blank
+	//lines.at(penIndex) = ""; // set it to blank
 	user.close();
 
 	// Now rewrite to file
 	ofstream userout(userpath.c_str(), ios::trunc);
+	cout << "Fixed output.. printing it out.." << lines.size() << endl;
+	cout << "line0: " << lines.at(0) << endl;
 	for(unsigned i = 0; i < lines.size(); i++) {
 		userout << lines.at(i) << endl;
+		cout << lines.at(i) << endl;
 	}
 	userout.close(); // close
 }
@@ -188,6 +199,31 @@ bool compareOutput() {
 	return retValue;
 }
 
+void cleanFiles() {
+	vector<string> userLines;
+	vector<string> bashLines;
+	
+	ifstream user(userpath.c_str());
+	ifstream bash(bashpath.c_str());
+	string curLine;
+	while(getline(user, curLine)) { userLines.push_back(curLine); }
+	while(getline(bash, curLine)) { bashLines.push_back(curLine); }
+
+	user.close();
+	bash.close();
+
+	ofstream uo(userpath.c_str());
+	ofstream bo(bashpath.c_str());
+	for(unsigned i = 1; i < (userLines.size()-1); i++) {
+		uo << userLines.at(i) << endl;
+	}
+
+	for(unsigned i = 1; i < (bashLines.size()-1); i++) {
+		bo << bashLines.at(i) << endl;
+	}
+	uo.close();
+	bo.close();
+}
 
 //	clearOutputFiles
 //	Param: none
@@ -269,7 +305,8 @@ int main()
 		// Create an instance of a test case
 		// Add it to the tests vector
 		test_case tc;
-		fixUserOutput(line); 
+		cleanFiles();
+		fixUserOutput("");
 		tc.pass = compareOutput();
 		tc.command = line; 
 		tests.push_back(tc);
