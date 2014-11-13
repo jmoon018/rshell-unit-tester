@@ -90,6 +90,49 @@ void fixString(string &line)
 }
 
 
+// fixUserOutput
+// Param: string cmd -- the comamnd currently being tested
+//		  char* fileName -- the name of the user output file
+// Purpose: Some of the rshell programs may print *name*@hammer.cs.ucr: *command*
+//		but the bash terminal does not display that, and thus the comparisons
+//		between the two output files are being thrown off
+void fixUserOutput(const string& cmd) {
+	ifstream user(userpath.c_str()); 
+	vector<string> lines; // contains the list of each line in the output file
+	string firstPart; // this will contain the string that is outputted before
+					  // each command.. EG: if it's jmoon018$ echo hi
+					  // then firstPart = jmoon018$ 
+	
+	string curLine;
+	while (getline(user, curLine)) {
+		// Find the command
+		size_t location = curLine.find(cmd);
+		if(location != string::npos) // Ok, found it
+		{
+			firstPart = curLine.substr(location);
+			lines.push_back(cmd); // push back only the commnand
+		}
+		else {
+			lines.push_back(curLine);
+		}
+	}
+
+	// penultimate index for lines
+	int penIndex = lines.size() - 2;
+	if(firstPart.compare(lines.at(penIndex)) != 0) {
+		cout << "WARNING: fixUserOutput - did not detect same text at the 2nd to last line." << endl;
+	}
+	lines.at(penIndex) = ""; // set it to blank
+	user.close();
+
+	// Now rewrite to file
+	ofstream userout(userpath.c_str(), ios::trunc);
+	for(unsigned i = 0; i < lines.size(); i++) {
+		userout << lines.at(i) << endl;
+	}
+	userout.close(); // close
+}
+
 // compareOutput
 // PARAM: none
 // Purpose: compares the user.log and bash.log files
@@ -110,6 +153,7 @@ bool compareOutput() {
 	string userline; // a single line from the user log
 	string bashline; // a single line from the bash log
 
+	// Fix the useroutput 
 	// Loop thru userlog.
 	// Bash log could be larger than userlog, so check afterwards
 	while(getline(user, userline)) {
@@ -177,6 +221,7 @@ void createLogs()
 	cmd(y);
 }
 
+
 int main()
 {
 	// Make these directories for separate testing environments
@@ -224,6 +269,7 @@ int main()
 		// Create an instance of a test case
 		// Add it to the tests vector
 		test_case tc;
+		fixUserOutput(line); 
 		tc.pass = compareOutput();
 		tc.command = line; 
 		tests.push_back(tc);
