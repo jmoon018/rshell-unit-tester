@@ -32,11 +32,12 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
+#include <unistd.h>
 
 using namespace std;
 
 // The path to your rshell program. This is important!
-const string PATH_TO_RSHELL = "./rshell"; 
+string PATH_TO_RSHELL = "./rshell"; 
 
 // Two directories will be made. They will each be the testing environments
 //		for the user/bash shell versions. The purpose of this is to test
@@ -45,7 +46,7 @@ const string PATH_TO_RSHELL = "./rshell";
 //	The directories may be automatically deleted afterwards, if AUTO_DELETE=true
 const string USER_FOLDER	= "user_folder_tmp";
 const string BASH_FOLDER	= "bash_folder_tmp";
-const bool AUTO_DELETE	= false; // Delete the files after you're done?
+const bool AUTO_DELETE	= true; // Delete the files after you're done?
 
 // The name of the log files
 const string USER_OUT_FILE = "user_out.log";
@@ -54,14 +55,17 @@ const string BASH_OUT_FILE = "bash_out.log";
 const string bashpath = (BASH_FOLDER + "/" + BASH_OUT_FILE);
 const string userpath = (USER_FOLDER + "/" + USER_OUT_FILE);
 
+bool IS_READY = false;
+
 // Input file
 // Has list of commands-to-be-tested delimited by a line
-const string INPUT_FILE = "../tests/input";
+string INPUT_FILE = "../tests/input";
 
 
 // Just like system(xxx.c_str()), but faster to type. 
 int cmd(string cmdstr) {
-	return system(cmdstr.c_str());
+	int x = system(cmdstr.c_str());
+	return x;
 }
 
 
@@ -106,37 +110,35 @@ void fixUserOutput(const string& cmd) {
 	string curLine;
 	while (getline(user, curLine)) {
 		// Find the command
-		//cout << "fixingoutput... " << curLine << endl;
-		size_t location = 1+curLine.find(" ");
+		cout << "LINE: " << curLine << endl << endl;
+		size_t location = curLine.find(" ");
+		if(location >= curLine.size()) {
+			continue;
+		}
 		if(firstPart == "") {
 			firstPart = curLine.substr(0, location);
+			cout << "FIRST PART: " << firstPart << endl << endl;
 			string theRet = curLine.substr(location, 10000);
-			cout << "RET: " << curLine << endl;
+			//cout << "RET: " << curLine << endl;
 			lines.push_back(theRet);
 		}
 		else {
 			if(curLine.compare(firstPart) == 0)
 				curLine = "";
-			cout << "RET2: " << curLine << "." << endl;
-			cout << "RET3: " << firstPart << "." << endl;
+			//cout << "RET2: " << curLine << "." << endl;
+			//cout << "RET3: " << firstPart << "." << endl;
 			lines.push_back(curLine);
 			//lines.push_back("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			//cout << "Added " << cmd << " to lines.." << lines.at(lines.size()-1) << "." << endl;
 		}
 	}
 
-	// penultimate index for lines
-	int penIndex = lines.size() - 2;
-	if(firstPart.compare(lines.at(penIndex)) != 0) {
-		cout << "WARNING: fixUserOutput - did not detect same text at the 2nd to last line." << endl;
-	}
-	//lines.at(penIndex) = ""; // set it to blank
 	user.close();
 
 	// Now rewrite to file
 	ofstream userout(userpath.c_str(), ios::trunc);
-	cout << "Fixed output.. printing it out.." << lines.size() << endl;
-	cout << "line0: " << lines.at(0) << endl;
+	//cout << "Fixed output.. printing it out.." << lines.size() << endl;
+	//cout << "line0: " << lines.at(0) << endl;
 	for(unsigned i = 0; i < lines.size(); i++) {
 		userout << lines.at(i) << endl;
 		cout << lines.at(i) << endl;
@@ -177,9 +179,10 @@ bool compareOutput() {
 		fixString(bashline);
 		fixString(userline);
 		
-		cout << "bl: " << bashline << endl;
-		cout << "ul: " << userline << endl;
+//		cout << "bl: " << bashline << endl;
+//		cout << "ul: " << userline << endl;
 
+		cout << "COMPARING OUTPUT\nBASH: " << bashline << "\nUSER: " << userline << endl;
 		// Compare
 		if(userline != bashline)
 			retValue = false;	
@@ -214,11 +217,11 @@ void cleanFiles() {
 
 	ofstream uo(userpath.c_str());
 	ofstream bo(bashpath.c_str());
-	for(unsigned i = 1; i < (userLines.size()-1); i++) {
+	for(unsigned i = 1; i < (userLines.size()); i++) {
 		uo << userLines.at(i) << endl;
 	}
 
-	for(unsigned i = 1; i < (bashLines.size()-1); i++) {
+	for(unsigned i = 1; i < (bashLines.size()); i++) {
 		bo << bashLines.at(i) << endl;
 	}
 	uo.close();
@@ -255,8 +258,62 @@ void createLogs()
 	string y = "chmod a+x " + bashpath;
 	cmd(x);
 	cmd(y);
+
+	user.close();
+	bash.close();
 }
 
+/* SETREADY
+	Param: 1 or 0 
+	Purpose: creates a file with value 1 or 0 which determines
+		whether or the program should continue
+	return nothing
+*/
+
+void setReady(string ready) {
+	ofstream file ("readyFile.txt", ofstream::trunc);
+	file << ready;
+	file.close();
+}
+
+bool isReady() {
+	ifstream file("readyFile.txt");
+	char c;
+	file.get(c);
+	file.close();
+	cout << "C IS !! " << c;
+	if(c == '1') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+
+// This method will find the current working directory and 
+// then determine if we need to go in the /bin folder or not
+// in order to get the executable
+void getProperPath() {
+	char buf[1024];
+	if(getcwd(buf, sizeof(buf)) == NULL) {
+		cout << "ERROR GETTING CURRENT WORKING DIRECTORY" << endl;
+	}
+
+	// Check if we are in 'bin'
+	string path = buf;
+	string lastThree = path.substr(path.size()-3, 3);
+	if(lastThree != "bin") {
+		cout << "CHANGING THE PATH TO BIN" << endl;
+		cout << lastThree << "!!!" << endl;
+		PATH_TO_RSHELL = "bin/rshell";
+		INPUT_FILE = "tests/input";
+	}
+	else {
+		cout << "OUR CWD IS CHILL" << endl;
+	}
+
+}
 
 int main()
 {
@@ -269,12 +326,17 @@ int main()
 	//		and it will provide information about whether it passed/failed
 	vector<test_case> tests;
 
+	getProperPath();
+
 	// ifstream of the INPUT_FILE.. this contains the list of commands to test
 	ifstream infile(INPUT_FILE.c_str());
+	cout << "IFILE: " << INPUT_FILE.c_str() << endl;
 
 	// Go through each command in the input file
 	string line; // contains the command that is currently being tested
-	while (getline(infile, line)) {
+	LINE:
+	cout << "AT LINE:" << endl;
+	if(getline(infile, line)) {
 		// Make sure they are clean before doing anything.	
 		//clearOutputFiles();
 		//createLogs();
@@ -286,7 +348,7 @@ int main()
 		ofile.close();
 
 		// test the user's shell
-		string theCommand = "script -c " + PATH_TO_RSHELL + " < commandtext.txt "
+		string theCommand = "script -q -c " + PATH_TO_RSHELL + " < commandtext.txt "
 			+ userpath;
 		cmd(theCommand);
 
@@ -294,24 +356,27 @@ int main()
 		//	should be sufficient.
 		// If this while loop runs too quickly, the program won't run properly
 		cmd("sleep .1");
+		cout << "sleep" << endl;
 
 		// Test the actual bash
-		cout << "\nTesting bash shell" << endl;
-		string cmd2 = "script -c \"" + line + "\" " + bashpath;
+		string cmd2 = "script -q -c \"" + line + "\" " + bashpath;
 		// Run the command and exit
-		cmd(cmd2);
-		cmd("exit");
+		cmd(cmd2 + "; exit;");
+		//cout << "exit" << endl;
+
 
 		// Create an instance of a test case
 		// Add it to the tests vector
 		test_case tc;
-		cleanFiles();
-		fixUserOutput("");
+		//cleanFiles();
+		//fixUserOutput("");
 		tc.pass = compareOutput();
 		tc.command = line; 
 		tests.push_back(tc);
 
 		cmd("rm commandtext.txt");
+		cout << "GOING BACK" << endl;
+		goto LINE;
 	}
 		
 
@@ -338,7 +403,7 @@ int main()
 		if(tests.at(total).pass)
 			passed++;
 	}
-	cout << "Final Results: " << passed << "/" << total << " passed. Gj" << endl;
+	cout << "Final Results: " << passed << "/" << total << " passed." << endl;
 	return 0;
 }
 
