@@ -37,7 +37,7 @@
 using namespace std;
 
 // The path to your rshell program. This is important!
-string PATH_TO_RSHELL = "./rshell"; 
+string PATH_TO_RSHELL = "/rshell"; 
 
 // Two directories will be made. They will each be the testing environments
 //		for the user/bash shell versions. The purpose of this is to test
@@ -150,7 +150,7 @@ void fixUserOutput(const string& cmd) {
 // PARAM: none
 // Purpose: compares the user.log and bash.log files
 // Returns true if they are the same, false otherwise
-
+//
 bool compareOutput() {
 	// Create a file stream for the user.log and bash.log
 	//		so we cane read and compare
@@ -182,7 +182,7 @@ bool compareOutput() {
 //		cout << "bl: " << bashline << endl;
 //		cout << "ul: " << userline << endl;
 
-		cout << "COMPARING OUTPUT\nBASH: " << bashline << "\nUSER: " << userline << endl;
+//		cout << "COMPARING OUTPUT\nBASH: " << bashline << "\nUSER: " << userline << endl;
 		// Compare
 		if(userline != bashline)
 			retValue = false;	
@@ -304,22 +304,32 @@ void getProperPath() {
 	string path = buf;
 	string lastThree = path.substr(path.size()-3, 3);
 	if(lastThree != "bin") {
-		cout << "CHANGING THE PATH TO BIN" << endl;
+		//cout << "CHANGING THE PATH TO BIN" << endl;
 		cout << lastThree << "!!!" << endl;
-		PATH_TO_RSHELL = "bin/rshell";
+		PATH_TO_RSHELL = "bin/" + PATH_TO_RSHELL;
 		INPUT_FILE = "tests/input";
 	}
 	else {
-		cout << "OUR CWD IS CHILL" << endl;
+//		cout << "OUR CWD IS CHILL" << endl;
+		PATH_TO_RSHELL = "./" + PATH_TO_RSHELL;
 	}
 
 }
 
-int main()
+int main(int argc, char** argv)
 {
+	if(argc == 1) { 
+		PATH_TO_RSHELL = "rshell";
+	}
+	else {
+		PATH_TO_RSHELL = argv[1];
+	}
 	// Make these directories for separate testing environments
 	cmd("mkdir " + USER_FOLDER);
+	//cmd("touch " + USER_FOLDER + "/" + USER_OUT_FILE); 
 	cmd("mkdir " + BASH_FOLDER);
+	//cmd("touch " + BASH_FOLDER + "/" + BASH_OUT_FILE); 
+
 
 	// Test list
 	// Each command from the input file will be added to this vector
@@ -330,13 +340,11 @@ int main()
 
 	// ifstream of the INPUT_FILE.. this contains the list of commands to test
 	ifstream infile(INPUT_FILE.c_str());
-	cout << "IFILE: " << INPUT_FILE.c_str() << endl;
+	//cout << "IFILE: " << INPUT_FILE.c_str() << endl;
 
 	// Go through each command in the input file
 	string line; // contains the command that is currently being tested
-	LINE:
-	cout << "AT LINE:" << endl;
-	if(getline(infile, line)) {
+	while(getline(infile, line)) {
 		// Make sure they are clean before doing anything.	
 		//clearOutputFiles();
 		//createLogs();
@@ -351,12 +359,13 @@ int main()
 		string theCommand = "script -q -c " + PATH_TO_RSHELL + " < commandtext.txt "
 			+ userpath;
 		cmd(theCommand);
+		cmd("exit");
 
-		// Add a delay. Change it for slower machines, although this value
-		//	should be sufficient.
-		// If this while loop runs too quickly, the program won't run properly
-		cmd("sleep .1");
-		cout << "sleep" << endl;
+		// Add a delay because if this while loop runs 
+		// too quickly, the program won't run properly
+		// a small sleep time like this is sufficient, should work
+		// for any machine
+		cmd("sleep .005");
 
 		// Test the actual bash
 		string cmd2 = "script -q -c \"" + line + "\" " + bashpath;
@@ -375,8 +384,9 @@ int main()
 		tests.push_back(tc);
 
 		cmd("rm commandtext.txt");
-		cout << "GOING BACK" << endl;
-		goto LINE;
+		cmd("rm -r " + userpath);
+		cmd("rm -r " + bashpath);
+	//	cout << "GOING BACK" << endl;
 	}
 		
 
@@ -406,5 +416,6 @@ int main()
 	cout << "Final Results: " << passed << "/" << total << " passed." << endl;
 	return 0;
 }
+
 
 
