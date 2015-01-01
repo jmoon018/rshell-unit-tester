@@ -1,6 +1,5 @@
-<h1>rshell_grader (WIP)</h1>
+<h1>Rshell Unit Tester
 <h4>By Jamal M. Moon</h4>
-======
 
 <h2>Table of Contents</h2>
 <ol>
@@ -29,20 +28,46 @@ This project will allow one to quickly test the functionality of his or her rshe
 <h1><a name="howToGetTag">How To Install</a></h1>
 
 <p>
-1) git clone http://github.com/jmoon018/rshell_grader.git
+1) git clone http://github.com/jmoon018/rshell-unit-tester.git
 <br>
-2) cd rshell_grader
+2) cd rshell-unit-tester
 <br>
 3) make
 <br>
-<b>**4) cd bin
-<br>
-5) ./autograder**</b>
+*4) add 'shelltester' to PATH
 </p>
 
-<h5>** Ensure that you are inside the bin folder, then type ./autograder. It may not work if you run it from ../bin or the root folder</h5>
+<h5>*For help: <a href="http://www.linfo.org/path_env_var.html">Go here</a> </h5>
 
 <h1><a name="howToUseTag">How To Use</a></h1>
+
+<p>If you added 'shelltester' to your PATH, you can navigate to any directory and run the unit tester -- there is no need to install the unit tester again. When you are in the directory containing the rshell files, you can run 'shelltester' there or in the /bin folder and the results should be the same. However, note that you must have the <i>input</i> file in the <i>tests</i> folder, which must be one directory above the <i>bin</i> folder. Here is an example layout:
+<br>
+<br>
+<b>Main Homework Folder</b>
+<br>
+<ul>
+    <li>-tests [folder]</li>
+    <li>-bin [folder]</li>
+    <li>-src [folder]</li>
+    <li>-LICENSE</li>
+    <li>-README.md</li>
+    <li>-Makefile</li>
+</ul>
+
+<b>bin folder:</b>
+<ul>
+    <li>rshell</li>
+    <li>ls</li>
+</ul>
+
+<b>tests folder:</b>
+<ul>
+    <li>input </li>
+</ul>
+
+The necessary components are: tests/input (which stores the list of commands) and bin/rshell (the program that is being unit tested).
+
 
 <p>Navigate to your <i>bin</i> folder and then type ./autograder when you are ready to run the program.<p>
 <p>To change the test cases, navigate to the <i>tests</i> folder, open the <i>input</i> file and add a command you want to test. Make sure that each command has its own separate line. Don't leave an extra, empty line or else the program
@@ -50,10 +75,8 @@ may give you a "fail" for that 'test.'</p>
 
 <h1><a name="bugsTag">Known Bugs/Limitations</a></h1>
 <ol>
-    <li>Testing is minimal so far, and thus this program might contain a lot of bugs</li>
-    <li>Has no protection against cheating, yet</li>
-    <li>Does not check if the environment is correct. eg: if you change directories, the program won't actually
-        do a "pwd" check to ensure it worked. This should be an easy fix</li>
+    <li>More testing required</li>
+    <li>Does not check environment</li>
     <li>The formatting and feedback can use some improvement</li>
 </ol>
 
