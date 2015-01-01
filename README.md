@@ -28,9 +28,9 @@ This project will allow one to quickly test the functionality of his or her rshe
 <h1><a name="howToGetTag">How To Install</a></h1>
 
 <p>
-1) git clone http://github.com/jmoon018/rshell_grader.git
+1) git clone http://github.com/jmoon018/rshell-unit-tester.git
 <br>
-2) cd rshell_grader
+2) cd rshell-unit-tester
 <br>
 3) make
 <br>
